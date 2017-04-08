@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Environment {
 	
-	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL };
+	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL, BOT };
 	
 	protected Tile[][] field;
 	protected TrashCan[] trashCans;
@@ -168,8 +168,9 @@ public class Environment {
 				default:
 				case EMPTY: tile = " "; break;
 				case WALL: tile = "W"; break;
-				case JUNK: tile = "x"; break;
+				case JUNK: tile = "·"; break;
 				case TRASHCAN: tile = "V"; break;
+				case BOT: tile = "@"; break;
 				}
 				
 				sb.append(tile + " ");

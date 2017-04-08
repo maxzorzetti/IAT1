@@ -3,7 +3,7 @@ package javablood;
 public class Euclidson {
 
 	public static double calculateEuclideanDistance(Point a, Point b) {
-		return Math.abs((a.x - b.x) + (a.y - b.y));
+		return Math.sqrt(Math.pow((a.x - b.x), 2) + Math.pow((a.y - b.y), 2));
 	}
 	
 }

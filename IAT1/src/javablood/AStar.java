@@ -3,6 +3,8 @@ package javablood;
 import java.util.ArrayList;
 import java.util.List;
 
+import javablood.Environment.Tile;
+
 public class AStar implements Algorithm {
 
 	@Override
@@ -25,15 +27,24 @@ public class AStar implements Algorithm {
 	private Point[] getAcessableTiles(Point start, Environment environment) {
 		List<Point> acessableTiles = new ArrayList<Point>();		
 		
-		for (int y = start.y - 1; y < start.y + 1; y++) {
-			for(int x = start.x - 1; x < start.x + 1; x++) {
-				if (x < environment.field[0].length && y < environment.field.length && (x != start.x && y != start.y)) {
-					acessableTiles.add(new Point(x, y));
+		for (int y = start.y - 1; y <= start.y + 1; y++) {
+			for(int x = start.x - 1; x <= start.x + 1; x++) {
+				
+				if (x < environment.field[0].length && y < environment.field.length) {	//TODO REFACTOR
+					if (x >= 0 && y >= 0) {
+						if (!(x == start.x && y == start.y)) {
+							if (environment.field[y][x] != Tile.WALL) {
+								acessableTiles.add(new Point(x, y));															
+							}
+						}
+					}
 				}
+				
 			}
 		}
 		
-		return (Point[]) acessableTiles.toArray();
+		Point[] result = new Point[acessableTiles.size()];
+		return acessableTiles.toArray(result);
 	}
 
 	private double costToNearest(Point start, Point point) {

@@ -8,7 +8,7 @@ public class App {
 		
 		System.out.println(env);
 		
-		Trashbot doty = new Trashbot(env, new AStar());
+		Trashbot doty = new Trashbot(env, new AStar(), 5);
 		
 		doty.cleanEnvironment();
 	}
