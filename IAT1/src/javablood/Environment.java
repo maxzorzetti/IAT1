@@ -1,14 +1,13 @@
 package javablood;
 
 import java.util.Random;
-import java.util.ArrayList;
 
 public class Environment {
 	
 	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL };
 	
 	protected Tile[][] field;
-	protected ArrayList<TrashCan> trashCans;
+	protected TrashCan[] trashCans;
 	
 	private int totalWalls;
 	private int totaltrashCans;
@@ -36,7 +35,8 @@ public class Environment {
 	
 	private void generatetrashCans(int trashCans) {
 		totaltrashCans = trashCans;
-		this.trashCans = new ArrayList<>();
+		this.trashCans = new TrashCan[trashCans];
+		int trashCansIndex = 0;
 		int thrashcanAreaHeight = field.length * 2 / 3;
 		int thrashcanAreaWidth = field.length / 3;
 		
@@ -60,7 +60,8 @@ public class Environment {
 			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
 				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
 				//trash can's capacity is zero because it's infinite
-				this.trashCans.add(new TrashCan(xTrashCan, yTrashCan, 0));
+				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0);
+				trashCansIndex++;
 				lefttrashCans--;
 			}
 		}
@@ -78,6 +79,8 @@ public class Environment {
 			
 			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
 				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
+				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0);
+				trashCansIndex++;
 				righttrashCans--;
 			}
 		}
