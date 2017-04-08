@@ -1,33 +1,43 @@
 package javablood;
 
+import java.util.HashSet;
 import java.util.Scanner;
 
 import javablood.Environment.Tile;
 
 public class Trashbot {
-		
+	
+	private Scanner in = new Scanner(System.in); // Not proud of this
+	public boolean pushToPrint = true;
+	public  boolean cleanOnPrint = true;
+	
 	private Environment environment;
+	private boolean lookedAtAllTiles;
 	
 	private Algorithm algorithm;
 	
 	private int junkCapacity;
 	private int junkHeld;
 	
+	private boolean direction;
+	
 	private Point currentLocation;
 	private Point lastLocation;
 	
 	public Trashbot(Environment environment, Algorithm algorithm, int junkCapacity) {
 		this.environment = environment;
+		this.lookedAtAllTiles = false;
 		this.algorithm = algorithm;
 		this.junkCapacity = junkCapacity;
 		this.junkHeld = 0;
+		this.direction = true;
 		this.currentLocation = new Point(0, 0);
 		this.lastLocation = new Point(0, 0);
 	}
 	
 	public void cleanEnvironment() {
 		
-		while (true) {
+		while (!lookedAtAllTiles) {
 			
 			Tile currentTile = look();
 			
@@ -37,7 +47,6 @@ public class Trashbot {
 				case TRASHCAN:
 				case WALL:
 				default:
-				System.out.println("Uh oh");
 			}
 			
 			lookForJunk();
@@ -46,42 +55,52 @@ public class Trashbot {
 	}
 	
 	private void lookForJunk() {
-		// TODO Auto-generated method stub
-		currentLocation = new Point(currentLocation.x + 1, currentLocation.y + 0); // Move somehow
+		int xMovement = direction? 1 : -1;
+		
+		Point newLocation = new Point(currentLocation.x + xMovement, currentLocation.y);	//Move horizontally
+		
+		if(newLocation.isInsideField(environment.field)) {
+			currentLocation = newLocation;
+		} else {
+			direction = !direction;	//Change horizontal direction
+			currentLocation = new Point(currentLocation.x, currentLocation.y + 1);			//Move vertically
+		
+			//Moved vertically and stepped outside the field = all tiles have been cleaned
+			if(!currentLocation.isInsideField(environment.field)) lookedAtAllTiles = true;	
+		}
+			
 		lastLocation = currentLocation;
+		
+		showStatus();
 	}
 
-	private void clean() {
-		Scanner in = new Scanner(System.in);
-		
+	private void clean() {		
 		this.environment.field[currentLocation.y][currentLocation.x] = Tile.EMPTY;
 		junkHeld++;
 		if( junkHeld < junkCapacity) return;
 		
 		
+		// Go to closest trash can
 		TrashCan closestTrashCan = findClosestTrashCan();
-		//Go to trashcan
 		Point trashCanLocation = closestTrashCan.getCoordinates();
-		System.out.println(this);
-
 		moveTo(trashCanLocation);
 		
-		//if(!closestTrashCan.isFull()) {
-			closestTrashCan.addTrash();
-			junkHeld = 0;
-		//} else {
-			// cry
-		//}
+		//Empty junk repository on trashcan
+		closestTrashCan.addTrash();
+		junkHeld = 0;
+
+		//Go back to the previous location
 		moveTo(lastLocation);
 		
 	}
 	
-	private void moveTo(Point point) {
-		Scanner in = new Scanner(System.in);
+	private void moveTo(Point point) {		
+		HashSet<Point> visitedTiles = new HashSet<Point>();
+		
 		while (!currentLocation.equals(point)) {
-			currentLocation = algorithm.calculateNextMove(currentLocation, point, new Point[0], environment); //TODO Pass previously visited tiles to algorithm
-			in.nextLine();
-			System.out.println(this);
+			currentLocation = algorithm.calculateNextMove(currentLocation, point, visitedTiles, environment);
+			visitedTiles.add(currentLocation);
+			showStatus();
 		}
 	}
 	
@@ -102,8 +121,13 @@ public class Trashbot {
 	}
 
 	private Environment.Tile look() {
-		System.out.println(currentLocation.y + " " + currentLocation.x);
 		return environment.field[currentLocation.y][currentLocation.x];
+	}
+	
+	private void showStatus() {
+		//if (cleanOnPrint) System.out.println("\f");
+		System.out.println(this);
+		if (pushToPrint) in.nextLine();
 	}
 	
 	public String toString() {

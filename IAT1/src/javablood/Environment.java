@@ -7,6 +7,8 @@ public class Environment {
 	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL, BOT };
 	
 	protected Tile[][] field;
+	protected int height;
+	protected int width;
 	protected TrashCan[] trashCans;
 	
 	private int totalWalls;
@@ -17,12 +19,12 @@ public class Environment {
 		buildWalls();
 		generatetrashCans(trashCans);
 		generateJunk();
-		
-		System.out.println();
 	}
 	
 	private void createField(int size) {
 		this.field = new Tile[size][size];
+		this.height = field.length;
+		this.width = field[0].length;
 		
 		for (int y = 0; y < field.length; y++) {
 			for (int x = 0; x < field[0].length; x++) {
