@@ -1,3 +1,4 @@
+package javablood;
 
 public class App {
 
@@ -6,8 +7,6 @@ public class App {
 		Environment env = new Environment(12, 5);
 		
 		System.out.println(env);
-		
-		
+			
 	}
-	
 }

@@ -1,10 +1,12 @@
+package javablood;
+
 import java.util.Random;
 
 public class Environment {
 	
-	private enum Tile { EMPTY, TRASHCAN, JUNK, WALL };
+	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL };
 	
-	private Tile[][] field;
+	protected Tile[][] field;
 	
 	private int totalWalls;
 	private int totalTrashcans;
@@ -150,7 +152,7 @@ public class Environment {
 				default:
 				case EMPTY: tile = " "; break;
 				case WALL: tile = "W"; break;
-				case JUNK: tile = "◇"; break;
+				case JUNK: tile = "x"; break;
 				case TRASHCAN: tile = "V"; break;
 				}
 				
