@@ -37,12 +37,12 @@ public class AStar implements Algorithm {
 	}
 
 	private double costToNearest(Point start, Point point) {
-		double cost = Math.abs((point.x - point.x) + (point.y - point.y));
+		double cost = Euclidson.calculateEuclideanDistance(start, point);
 		return cost;
 	}
 	// Both methods are pretty much the same, but I've kept them separate if I want to change the heuristics later
 	private double costToObjective(Point point, Point objective) {
-		double cost = Math.abs((point.x - objective.x) + (point.y - objective.y)); 
+		double cost = Euclidson.calculateEuclideanDistance(point, objective); 
 		return cost;
 	}
 
