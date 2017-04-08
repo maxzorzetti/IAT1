@@ -79,7 +79,7 @@ public class Trashbot {
 	private void moveTo(Point point) {
 		Scanner in = new Scanner(System.in);
 		while (!currentLocation.equals(point)) {
-			currentLocation = algorithm.calculateNextMove(currentLocation, point, environment);
+			currentLocation = algorithm.calculateNextMove(currentLocation, point, new Point[0], environment); //TODO Pass previously visited tiles to algorithm
 			in.nextLine();
 			System.out.println(this);
 		}

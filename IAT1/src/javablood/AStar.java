@@ -6,9 +6,11 @@ import java.util.List;
 import javablood.Environment.Tile;
 
 public class AStar implements Algorithm {
+	
+	
 
 	@Override
-	public Point calculateNextMove(Point start, Point objective, Environment environment) {
+	public Point calculateNextMove(Point start, Point objective, Point[] previousTiles, Environment environment) {
 		Point[] acessableTiles = getAcessableTiles(start, environment);
 		
 		Point bestPoint = null;
