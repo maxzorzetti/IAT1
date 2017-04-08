@@ -1,20 +1,22 @@
 package javablood;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Environment {
 	
 	public enum Tile { EMPTY, TRASHCAN, JUNK, WALL };
 	
 	protected Tile[][] field;
+	protected ArrayList<TrashCan> trashCans;
 	
 	private int totalWalls;
-	private int totalTrashcans;
+	private int totaltrashCans;
 	
-	public Environment(int size, int trashcans){			
+	public Environment(int size, int trashCans){			
 		createField(size);
 		buildWalls();
-		generateTrashcans(trashcans);
+		generatetrashCans(trashCans);
 		generateJunk();
 		
 		System.out.println();
@@ -32,9 +34,9 @@ public class Environment {
 		System.out.println("Total tiles: " + field.length * field[0].length);
 	}
 	
-	private void generateTrashcans(int trashcans) {
-		totalTrashcans = trashcans;
-		
+	private void generatetrashCans(int trashCans) {
+		totaltrashCans = trashCans;
+		this.trashCans = new ArrayList<>();
 		int thrashcanAreaHeight = field.length * 2 / 3;
 		int thrashcanAreaWidth = field.length / 3;
 		
@@ -43,40 +45,51 @@ public class Environment {
 		//Generate trash cans on the left
 		int x = 0;
 		int y = 2*field.length/12;		
-		int leftTrashcans = (int) Math.ceil(trashcans/2.0);
+		int lefttrashCans = (int) Math.ceil(trashCans/2.0);
 		
-		while(leftTrashcans > 0) {
+		//Final coordinates of a trash can (x and y + offset)
+		int xTrashCan, yTrashCan;
+		
+		while(lefttrashCans > 0) {
 			int xOffset = rand.nextInt(thrashcanAreaWidth);
 			int yOffset = rand.nextInt(thrashcanAreaHeight);
 			
-			if (field[y + yOffset][x + xOffset] == Tile.EMPTY) {
-				field[y + yOffset][x + xOffset] = Tile.TRASHCAN;
-				leftTrashcans--;
+			xTrashCan = x + xOffset;
+			yTrashCan = y + yOffset;
+			
+			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
+				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
+				//trash can's capacity is zero because it's infinite
+				this.trashCans.add(new TrashCan(xTrashCan, yTrashCan, 0));
+				lefttrashCans--;
 			}
 		}
 		
 		//Generate trash cans on the right
-		int rightTrashcans = (int) Math.floor(trashcans/2.0);  //só explicitando o floor e o ceil
+		int righttrashCans = (int) Math.floor(trashCans/2.0);  //só explicitando o floor e o ceil
 		x = 8*field.length/12;
 		y = 2*field.length/12;
-		while(rightTrashcans > 0) {
+		while(righttrashCans > 0) {
 			int xOffset = rand.nextInt(thrashcanAreaWidth);
 			int yOffset = rand.nextInt(thrashcanAreaHeight);
 			
-			if (field[y + yOffset][x + xOffset] == Tile.EMPTY) {
-				field[y + yOffset][x + xOffset] = Tile.TRASHCAN;
-				rightTrashcans--;
+			xTrashCan = x + xOffset;
+			yTrashCan = y + yOffset;
+			
+			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
+				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
+				righttrashCans--;
 			}
 		}
 		
-		System.out.println("Total trashcans: " + trashcans);
+		System.out.println("Total trashCans: " + trashCans);
 	}
 
 	private void generateJunk() {
 		double junkRate = 0.4 + new Random().nextDouble() * 0.45;
 		int junk = (int) (junkRate * (field.length * field[0].length));
 		
-		int emptySpace = field.length * field[0].length - totalWalls - totalTrashcans;
+		int emptySpace = field.length * field[0].length - totalWalls - totaltrashCans;
 		if (junk > emptySpace) {
 			junk = emptySpace;
 			junkRate = junk/(1.0 * field.length * field[0].length);
