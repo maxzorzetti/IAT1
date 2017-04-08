@@ -7,13 +7,12 @@ public class AStar implements Algorithm {
 
 	@Override
 	public Point calculateNextMove(Point start, Point objective, Environment environment) {
-		
 		Point[] acessableTiles = getAcessableTiles(start, environment);
 		
 		Point bestPoint = null;
 		double bestScore = Double.MAX_VALUE;
 		for (Point point: acessableTiles ) {
-			double pointScore = costToNearest(start) + costToObjective(start, objective);
+			double pointScore = costToNearest(start, point) + costToObjective(point, objective);
 			if (pointScore < bestScore) {
 				bestScore = pointScore;
 				bestPoint = point;
@@ -37,14 +36,14 @@ public class AStar implements Algorithm {
 		return (Point[]) acessableTiles.toArray();
 	}
 
-	private double costToNearest(Point start) {
-		// TODO Auto-generated method stub
-		return 0;
+	private double costToNearest(Point start, Point point) {
+		double cost = Math.abs((point.x - point.x) + (point.y - point.y));
+		return cost;
 	}
-
-	private double costToObjective(Point start, Point objective) {
-		// TODO Auto-generated method stub
-		return 0;
+	// Both methods are pretty much the same, but I've kept them separate if I want to change the heuristics later
+	private double costToObjective(Point point, Point objective) {
+		double cost = Math.abs((point.x - objective.x) + (point.y - objective.y)); 
+		return cost;
 	}
 
 }

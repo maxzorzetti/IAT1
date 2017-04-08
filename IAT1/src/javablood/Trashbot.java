@@ -6,7 +6,8 @@ public class Trashbot {
 	
 	private Algorithm algorithm;
 
-	public Trashbot(Algorithm algorithm) {
+	public Trashbot(Environment environment, Algorithm algorithm) {
+		this.environment = environment;
 		this.algorithm = algorithm;
 	}
 	

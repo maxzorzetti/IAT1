@@ -7,6 +7,9 @@ public class App {
 		Environment env = new Environment(12, 5);
 		
 		System.out.println(env);
-			
+		
+		Trashbot doty = new Trashbot(env, new AStar());
+		
+		doty.cleanEnvironment();
 	}
 }
