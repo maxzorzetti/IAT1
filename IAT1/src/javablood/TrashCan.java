@@ -39,4 +39,8 @@ public class TrashCan {
 		if(content >= capacity) return true;
 		return false;
 	}
+	
+	public String toString(){
+		return "Coordinates: (" + coordinates.x + "," + coordinates.y + ")\nCapacity: " + content + "/" + capacity;
+	}
 }
