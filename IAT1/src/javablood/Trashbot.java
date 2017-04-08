@@ -32,15 +32,25 @@ public class Trashbot {
 				System.out.println("Uh oh");
 			}
 			
+			lookForJunk();
 		}
 		
 	}
 	
+	private void lookForJunk() {
+		// TODO Auto-generated method stub
+		currentLocation = new Point(currentLocation.x + 1, currentLocation.y + 1); // Move somehow
+		lastLocation = currentLocation;
+	}
+
 	private void clean() {
 		this.environment.field[currentLocation.y][currentLocation.x] = Tile.EMPTY;
 		
 		TrashCan closestTrashCan = findClosestTrashCan();
+		//Go to trashcan
 		
+		
+		//Go back to lastLocation
 	}
 	
 	private TrashCan findClosestTrashCan() {	// TODO Change to include a 1-cell radius around the trashcan when searching
