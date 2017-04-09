@@ -23,7 +23,12 @@ public class AStar implements Algorithm {
 		HashMap<Point, Double> costSoFar = new HashMap<Point, Double>();
 		HashMap<Point, Point> cameFrom = new HashMap<Point, Point>();
 		
-		costSoFar.put(start, 0.0);
+		for(Point point: points){
+			costSoFar.put(point, Double.MAX_VALUE);
+			cameFrom.put(point, null);
+		}
+			
+		costSoFar.put(start, (double) 0);
 		
 		while (!frontier.isEmpty()) {
 			PriorityPoint current = frontier.poll();
@@ -34,7 +39,7 @@ public class AStar implements Algorithm {
 				
 				double newCost = costSoFar.get(current.point) + costToNearest(current.point, next);
 				
-				if ( !costSoFar.containsValue(next) || newCost < costSoFar.get(next) ) {
+				if (newCost < costSoFar.get(next) ) {
 					
 					costSoFar.put(next, newCost);
 					double priority = newCost + costToObjective(next, objective);

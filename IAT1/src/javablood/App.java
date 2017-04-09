@@ -11,7 +11,7 @@ public class App {
 		System.out.println(env);
 		
 		Trashbot doty = new Trashbot(env, new AStar(), 10);
-		doty.pushToPrint = false;
+		doty.pushToPrint = true;
 		doty.cleanEnvironment();
 
 	}
