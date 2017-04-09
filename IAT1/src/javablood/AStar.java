@@ -24,7 +24,7 @@ public class AStar implements Algorithm {
 		HashMap<Point, Point> cameFrom = new HashMap<Point, Point>();
 		
 		
-		while (frontier.isEmpty()) {
+		while (!frontier.isEmpty()) {
 			PriorityPoint current = frontier.poll();
 			
 			if(current.point.equals(objective)) break;
@@ -47,7 +47,7 @@ public class AStar implements Algorithm {
 		
 		//for (Node node: cameFrom)
 		
-		return null;
+		return tracePath(start, objective, cameFrom);
 	}
 
 	@Override
@@ -122,6 +122,16 @@ public class AStar implements Algorithm {
 	private double costToObjective(Point point, Point objective) {
 		double cost = Euclidson.calculateEuclideanDistance(point, objective); 
 		return cost;
+	}
+	
+	private Point[] tracePath(Point start, Point objective, HashMap<Point, Point> parents){
+		ArrayList<Point> path = new ArrayList<>();
+		Point currentPoint = objective;
+		while(!currentPoint.equals(start)){
+			path.add(0, currentPoint);
+			currentPoint = parents.get(currentPoint);
+		}		
+		return (Point[]) path.toArray();
 	}
 	
 	private class PriorityPoint implements Comparable<PriorityPoint>{
