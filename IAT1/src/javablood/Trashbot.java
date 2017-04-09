@@ -145,7 +145,7 @@ public class Trashbot {
 				default:
 				case EMPTY: tile = " "; break;
 				case WALL: tile = "W"; break;
-				case JUNK: tile = "·"; break;
+				case JUNK: tile = "."; break;
 				case TRASHCAN: tile = "V"; break;
 				}
 				
