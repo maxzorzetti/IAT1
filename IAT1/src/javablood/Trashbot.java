@@ -43,16 +43,20 @@ public class Trashbot {
 			
 			Tile currentTile = look();
 			
-			switch(currentTile) {
-				case EMPTY: ; break;
-				case JUNK: clean(); break;
-				case TRASHCAN:
-				case WALL:
-				default:
-			}
+			if(currentTile == Tile.JUNK) clean();
 			
+//			switch(currentTile) {
+//				case EMPTY: ; break;
+//				case JUNK: clean(); break;
+//				case TRASHCAN:
+//				case WALL:
+//				default:
+//			}
+//			
 			lookForJunk();
 		}
+		
+		showStatus();
 		
 	}
 	
@@ -62,18 +66,19 @@ public class Trashbot {
 		Point newLocation = new Point(currentLocation.x + xMovement, currentLocation.y);	//Move horizontally
 		
 		if(newLocation.isInsideField(environment.field)) {
-			currentLocation = newLocation;
+			while(environment.field[newLocation.y][newLocation.x] == Tile.WALL) newLocation.x += xMovement;
 		} else {
 			direction = !direction;	//Change horizontal direction
-			currentLocation = new Point(currentLocation.x, currentLocation.y + 1);			//Move vertically
-		
+			newLocation = new Point(currentLocation.x, currentLocation.y + 1);			//Move vertically
 			//Moved vertically and stepped outside the field = all tiles have been cleaned
-			if(!currentLocation.isInsideField(environment.field)) lookedAtAllTiles = true;	
-		}
-			
+			if(!newLocation.isInsideField(environment.field)){
+				lookedAtAllTiles = true;	
+				return;
+			}
+		}			
+		moveTo(newLocation);
 		lastLocation = currentLocation;
 		
-		showStatus();
 	}
 
 	private void clean() {		
@@ -100,9 +105,9 @@ public class Trashbot {
 		Point[] path = algorithm.getPath(currentLocation, point, environment);
 		int pathIndex = 0;
 		while (!currentLocation.equals(point)) {
+			showStatus();
 			currentLocation = path[pathIndex];
 			pathIndex++;
-			showStatus();
 		}
 	}
 	
@@ -145,6 +150,7 @@ public class Trashbot {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("Junk Held: " + junkHeld + "/" + junkCapacity + "\n");
 		for (int y = 0; y < environment.field.length; y++) {
 			for (int x = 0; x < environment.field[0].length; x++) {
 				String tile;
