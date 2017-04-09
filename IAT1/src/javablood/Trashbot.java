@@ -37,6 +37,8 @@ public class Trashbot {
 	
 	public void cleanEnvironment() {
 		
+		showStatus();
+		
 		while (!lookedAtAllTiles) {
 			
 			Tile currentTile = look();
