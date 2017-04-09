@@ -95,11 +95,11 @@ public class Trashbot {
 	}
 	
 	private void moveTo(Point point) {		
-		HashSet<Point> visitedTiles = new HashSet<Point>();
+		//HashSet<Point> visitedTiles = new HashSet<Point>();
 		
 		while (!currentLocation.equals(point)) {
-			currentLocation = algorithm.calculateNextMove(currentLocation, point, visitedTiles, environment);
-			visitedTiles.add(currentLocation);
+			//currentLocation = algorithm.calculateNextMove(currentLocation, point, visitedTiles, environment);
+			//visitedTiles.add(currentLocation);
 			showStatus();
 		}
 	}

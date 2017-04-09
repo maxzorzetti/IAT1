@@ -1,5 +1,6 @@
 package javablood;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Environment {
@@ -158,6 +159,19 @@ public class Environment {
 				totalWalls--;
 			}
 		}	
+	}
+	
+	public Point[] getAsPoints() {
+		ArrayList pointsList = new ArrayList<Point>();
+		
+		for (int y = 0; y < field.length; y++) {
+			for (int x = 0; x < field[0].length; x++) {
+				pointsList.add(new Point(x, y));
+			}
+		}
+		
+		Point[] points = new Point[pointsList.size()];
+		return (Point[]) pointsList.toArray(points);
 	}
 	
 	public String toString() {
