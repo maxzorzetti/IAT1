@@ -95,14 +95,25 @@ public class Trashbot {
 	}
 	
 	private void moveTo(Point point) {		
-		//HashSet<Point> visitedTiles = new HashSet<Point>();
-		
+		Point[] path = algorithm.getPath(currentLocation, point, environment);
+		int pathIndex = 0;
 		while (!currentLocation.equals(point)) {
-			//currentLocation = algorithm.calculateNextMove(currentLocation, point, visitedTiles, environment);
-			//visitedTiles.add(currentLocation);
+			currentLocation = path[pathIndex];
+			pathIndex++;
 			showStatus();
 		}
 	}
+	
+
+//	private void moveTo(Point point) {							//Old implementation
+//		//HashSet<Point> visitedTiles = new HashSet<Point>();
+//		
+//		while (!currentLocation.equals(point)) {
+//			//currentLocation = algorithm.calculateNextMove(currentLocation, point, visitedTiles, environment);
+//			//visitedTiles.add(currentLocation);
+//			showStatus();
+//		}
+//	}
 	
 	private TrashCan findClosestTrashCan() {	// TODO Change to include a 1-cell radius around the trashcan when searching
 		TrashCan closestTrashCan = environment.trashCans[0];

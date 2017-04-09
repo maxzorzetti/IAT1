@@ -23,6 +23,7 @@ public class AStar implements Algorithm {
 		HashMap<Point, Double> costSoFar = new HashMap<Point, Double>();
 		HashMap<Point, Point> cameFrom = new HashMap<Point, Point>();
 		
+		costSoFar.put(start, 0.0);
 		
 		while (!frontier.isEmpty()) {
 			PriorityPoint current = frontier.poll();
@@ -31,7 +32,7 @@ public class AStar implements Algorithm {
 			
 			for (Point next: getAcessableTiles(current.point, points, environment)) {
 				
-				double newCost = costSoFar.get(next) + costToNearest(current.point, next);
+				double newCost = costSoFar.get(current.point) + costToNearest(current.point, next);
 				
 				if ( !costSoFar.containsValue(next) || newCost < costSoFar.get(next) ) {
 					
@@ -130,8 +131,9 @@ public class AStar implements Algorithm {
 		while(!currentPoint.equals(start)){
 			path.add(0, currentPoint);
 			currentPoint = parents.get(currentPoint);
-		}		
-		return (Point[]) path.toArray();
+		}
+		Point[] result = new Point[path.size()];
+		return (path.toArray(result));
 	}
 	
 	private class PriorityPoint implements Comparable<PriorityPoint>{
