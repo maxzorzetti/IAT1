@@ -26,7 +26,9 @@ public class Point {
 	}
 	
 	public boolean isInsideField(Object[][] matrix){
-		return this.x < matrix[0].length && this.x >= 0 && this.y < matrix.length && this.y < matrix[0].length;
+		int width = matrix[0].length;
+		int height = matrix.length;
+		return x < width && y < height && x >= 0 && y >= 0;
 	}
 	
 	public static Point findPoint(Point point, Point[] points) {

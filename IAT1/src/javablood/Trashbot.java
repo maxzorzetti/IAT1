@@ -1,6 +1,5 @@
 package javablood;
 
-import java.util.HashSet;
 import java.util.Scanner;
 
 import javablood.Environment.Tile;
@@ -9,10 +8,11 @@ public class Trashbot {
 	
 	private Scanner in = new Scanner(System.in); // Not proud of this
 	public boolean pushToPrint = true;
-	public  boolean cleanOnPrint = true;
+	public boolean enablePrint = true;
+	public boolean cleanOnPrint = true;
 	
 	private Environment environment;
-	private boolean lookedAtAllTiles;
+	private boolean hasLookedAtAllTiles;
 	
 	private Algorithm algorithm;
 	
@@ -26,7 +26,7 @@ public class Trashbot {
 	
 	public Trashbot(Environment environment, Algorithm algorithm, int junkCapacity) {
 		this.environment = environment;
-		this.lookedAtAllTiles = false;
+		this.hasLookedAtAllTiles = false;
 		this.algorithm = algorithm;
 		this.junkCapacity = junkCapacity;
 		this.junkHeld = 0;
@@ -39,7 +39,7 @@ public class Trashbot {
 		
 		showStatus();
 		
-		while (!lookedAtAllTiles) {
+		while (!hasLookedAtAllTiles) {
 			
 			Tile currentTile = look();
 			
@@ -49,6 +49,7 @@ public class Trashbot {
 //				case EMPTY: ; break;
 //				case JUNK: clean(); break;
 //				case TRASHCAN:
+			
 //				case WALL:
 //				default:
 //			}
@@ -61,23 +62,47 @@ public class Trashbot {
 	}
 	
 	private void lookForJunk() {
-		int xMovement = direction? 1 : -1;
+		Point move = new Point(currentLocation.x, currentLocation.y);
+		int horizontalMovement = direction? 1 : -1;	
+		move.x += horizontalMovement; 
 		
-		Point newLocation = new Point(currentLocation.x + xMovement, currentLocation.y);	//Move horizontally
-		
-		if(newLocation.isInsideField(environment.field)) {
-			while(environment.field[newLocation.y][newLocation.x] == Tile.WALL) newLocation.x += xMovement;
-		} else {
-			direction = !direction;	//Change horizontal direction
-			newLocation = new Point(currentLocation.x, currentLocation.y + 1);			//Move vertically
-			//Moved vertically and stepped outside the field = all tiles have been cleaned
-			if(!newLocation.isInsideField(environment.field)){
-				lookedAtAllTiles = true;	
+		while (!hasLookedAtAllTiles) {
+			horizontalMovement = direction? 1 : -1;
+			
+			while (move.isInsideField(environment.field) && (environment.field[move.y][move.x] == Tile.WALL || environment.field[move.y][move.x] == Tile.TRASHCAN)) {
+				move.x += horizontalMovement;
+			}
+			
+			if(move.isInsideField(environment.field)) {
+				moveTo(move);
+				lastLocation = currentLocation;
 				return;
 			}
-		}			
-		moveTo(newLocation);
-		lastLocation = currentLocation;
+			
+			direction = !direction;	
+			move.x -= horizontalMovement;
+			move.y += 1;
+			
+			if(!move.isInsideField(environment.field)) hasLookedAtAllTiles = true;
+		}
+
+		
+		
+//		
+//		Point newLocation = new Point(currentLocation.x + horizontalMovement, currentLocation.y);	//Move horizontally		
+//		if(newLocation.isInsideField(environment.field)) {
+//			while(environment.field[newLocation.y][newLocation.x] == Tile.WALL) newLocation.x += horizontalMovement;
+//		} else {
+//			direction = !direction;	//Change horizontal direction
+//			newLocation = new Point(currentLocation.x, currentLocation.y + 1);			//Move vertically
+//			//Moved vertically and stepped outside the field = all tiles have been cleaned
+//			if(!newLocation.isInsideField(environment.field)){
+//				lookedAtAllTiles = true;	
+//				return;
+//			}
+//		}			
+//		moveTo(newLocation);
+//		lastLocation = currentLocation;
 		
 	}
 
@@ -88,8 +113,9 @@ public class Trashbot {
 		
 		
 		// Go to closest trash can
-		TrashCan closestTrashCan = findClosestTrashCan();
-		Point trashCanLocation = closestTrashCan.getCoordinates();
+		Object[] imSorry = findClosestTrashCan();
+		TrashCan closestTrashCan = (TrashCan) imSorry[0];
+		Point trashCanLocation = (Point) imSorry[1];
 		moveTo(trashCanLocation);
 		
 		//Empty junk repository on trashcan
@@ -104,11 +130,16 @@ public class Trashbot {
 	private void moveTo(Point point) {		
 		Point[] path = algorithm.getPath(currentLocation, point, environment);
 		int pathIndex = 0;
-		while (!currentLocation.equals(point)) {
-			showStatus();
-			currentLocation = path[pathIndex];
-			pathIndex++;
+
+		for (Point pointa: path) {
+			System.out.print(pointa + "\t");
 		}
+		
+		for (Point pathPoint: path) {
+			showStatus();
+			currentLocation = pathPoint;
+		}
+
 	}
 	
 
@@ -122,20 +153,30 @@ public class Trashbot {
 //		}
 //	}
 	
-	private TrashCan findClosestTrashCan() {	// TODO Change to include a 1-cell radius around the trashcan when searching
+	private Object[] findClosestTrashCan() {	// TODO Change to include a 1-cell radius around the trashcan when searching
 		TrashCan closestTrashCan = environment.trashCans[0];
-		double closestTrashCanDistance = Euclidson.calculateEuclideanDistance(currentLocation, closestTrashCan.getCoordinates());
+		Point closestPoint = environment.trashCans[0].getWalkableAdjacentTiles()[0];
+		double closestPointDistance = Euclidson.calculateEuclideanDistance(currentLocation, closestPoint);
 		
 		for (TrashCan trashCan: environment.trashCans) {
-			double distance = Euclidson.calculateEuclideanDistance(currentLocation, trashCan.getCoordinates());
 			
-			if (distance < closestTrashCanDistance) {
-				closestTrashCan = trashCan;
-				closestTrashCanDistance = distance;
+			Point[] adjacentTiles = trashCan.getWalkableAdjacentTiles();
+			
+			for (Point point: adjacentTiles) {
+				double distance = Euclidson.calculateEuclideanDistance(currentLocation, point);
+
+				if (distance < closestPointDistance) {
+					closestTrashCan = trashCan;
+					closestPoint = point;
+					closestPointDistance = distance;
+				}
 			}
+			
 		}
-		
-		return closestTrashCan;
+		Object[] sorryForThis = new Object[2];
+		sorryForThis[0] = closestTrashCan;
+		sorryForThis[1] = closestPoint;
+		return sorryForThis;
 	}
 
 	private Environment.Tile look() {
@@ -144,13 +185,14 @@ public class Trashbot {
 	
 	private void showStatus() {
 		//if (cleanOnPrint) System.out.println("\f");
-		System.out.println(this);
+		if (enablePrint) System.out.println(this);
 		if (pushToPrint) in.nextLine();
 	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Junk Held: " + junkHeld + "/" + junkCapacity + "\n");
+		
 		for (int y = 0; y < environment.field.length; y++) {
 			for (int x = 0; x < environment.field[0].length; x++) {
 				String tile;

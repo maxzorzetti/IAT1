@@ -13,7 +13,7 @@ public class Environment {
 	protected TrashCan[] trashCans;
 	
 	private int totalWalls;
-	private int totaltrashCans;
+	private int totalTrashCans;
 	
 	public Environment(int size, int trashCans){			
 		createField(size);
@@ -23,6 +23,7 @@ public class Environment {
 	}
 	
 	private void createField(int size) {
+		if (size < 12) size = 12;
 		this.field = new Tile[size][size];
 		this.height = field.length;
 		this.width = field[0].length;
@@ -37,7 +38,7 @@ public class Environment {
 	}
 	
 	private void generatetrashCans(int trashCans) {
-		totaltrashCans = trashCans;
+		totalTrashCans = trashCans;
 		this.trashCans = new TrashCan[trashCans];
 		int trashCansIndex = 0;
 		int thrashcanAreaHeight = field.length * 2 / 3;
@@ -63,7 +64,7 @@ public class Environment {
 			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
 				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
 				//trash can's capacity is zero because it's infinite
-				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0);
+				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0, this);
 				trashCansIndex++;
 				lefttrashCans--;
 			}
@@ -82,7 +83,7 @@ public class Environment {
 			
 			if (field[yTrashCan][xTrashCan] == Tile.EMPTY) {
 				field[yTrashCan][xTrashCan] = Tile.TRASHCAN;
-				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0);
+				this.trashCans[trashCansIndex] = new TrashCan(xTrashCan, yTrashCan, 0, this);
 				trashCansIndex++;
 				righttrashCans--;
 			}
@@ -95,7 +96,7 @@ public class Environment {
 		double junkRate = 0.4 + new Random().nextDouble() * 0.45;
 		int junk = (int) (junkRate * (field.length * field[0].length));
 		
-		int emptySpace = field.length * field[0].length - totalWalls - totaltrashCans;
+		int emptySpace = field.length * field[0].length - totalWalls - totalTrashCans;
 		if (junk > emptySpace) {
 			junk = emptySpace;
 			junkRate = junk/(1.0 * field.length * field[0].length);
@@ -162,7 +163,7 @@ public class Environment {
 	}
 	
 	public Point[] getAsPoints() {
-		ArrayList pointsList = new ArrayList<Point>();
+		ArrayList<Point> pointsList = new ArrayList<Point>();
 		
 		for (int y = 0; y < field.length; y++) {
 			for (int x = 0; x < field[0].length; x++) {
