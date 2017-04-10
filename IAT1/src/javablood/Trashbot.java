@@ -129,11 +129,11 @@ public class Trashbot {
 	
 	private void moveTo(Point point) {		
 		Point[] path = algorithm.getPath(currentLocation, point, environment);
-		int pathIndex = 0;
 
 		for (Point pointa: path) {
-			System.out.print(pointa + "\t");
+			System.out.print(pointa + " ");
 		}
+		System.out.println();
 		
 		for (Point pathPoint: path) {
 			showStatus();
@@ -153,7 +153,7 @@ public class Trashbot {
 //		}
 //	}
 	
-	private Object[] findClosestTrashCan() {	// TODO Change to include a 1-cell radius around the trashcan when searching
+	private Object[] findClosestTrashCan() {
 		TrashCan closestTrashCan = environment.trashCans[0];
 		Point closestPoint = environment.trashCans[0].getWalkableAdjacentTiles()[0];
 		double closestPointDistance = Euclidson.calculateEuclideanDistance(currentLocation, closestPoint);

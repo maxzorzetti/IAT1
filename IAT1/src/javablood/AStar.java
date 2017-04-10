@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 import javablood.Environment.Tile;
 
@@ -27,7 +26,7 @@ public class AStar implements Algorithm {
 			costSoFar.put(point, Double.MAX_VALUE);
 			cameFrom.put(point, null);
 		}
-			
+		
 		costSoFar.put(start, (double) 0);
 		
 		while (!frontier.isEmpty()) {
@@ -57,22 +56,18 @@ public class AStar implements Algorithm {
 	}
 	
 	private Point[] getAcessableTiles(Point start, Point[] referencePoints, Environment environment) {
-		List<Point> acessableTiles = new ArrayList<Point>();		
-		
-		
-		int height = environment.field.length;
-		int width = environment.field[0].length;
+		List<Point> acessableTiles = new ArrayList<Point>();
 		
 		for (int y = start.y - 1; y <= start.y + 1; y++) {
 			for(int x = start.x - 1; x <= start.x + 1; x++) {
 				Point point = new Point(x, y);
 				
 				if (!(point.isInsideField(environment.field))) continue;	//Check if it's inside the matrix
-				if (point.equals(start)) continue;								//Check if it's the tile we're checking
-				if (environment.field[y][x] == Tile.WALL) continue;				//Check if it's a wall
+				if (point.equals(start)) continue;							//Check if it's the tile we're checking
+				if (environment.field[y][x] == Tile.WALL) continue;			//Check if it's a wall
 				if (environment.field[y][x] == Tile.TRASHCAN) continue;
 				
-				acessableTiles.add(Point.findPoint(new Point(x, y), referencePoints));																			
+				acessableTiles.add(Point.findPoint(new Point(x, y), referencePoints));
 			}
 		}
 		
@@ -86,7 +81,7 @@ public class AStar implements Algorithm {
 	}
 	// Both methods are pretty much the same, but we've kept them separate in case we want to change the heuristics later
 	private double costToObjective(Point point, Point objective) {
-		double cost = Euclidson.calculateEuclideanDistance(point, objective); 
+		double cost = Euclidson.calculateEuclideanDistance(point, objective);
 		return cost;
 	}
 	
